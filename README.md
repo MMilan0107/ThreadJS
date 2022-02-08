@@ -36,11 +36,11 @@ Thread.Closeall() // Closes all threads
 Thread.Allocate(1)
 
 Thread.worker1.run( ()=>{
-	var x = 1;
-	for(let i = 1; i < 100; i++){
-		x *= i;
-	}
-	Thread.return(x)
+   var x = 1;
+   for(let i = 1; i < 100; i++){
+      x *= i;
+   }
+   Thread.return(x)
 } )
 .then(console.log) // Logs value of x
 
