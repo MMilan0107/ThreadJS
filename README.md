@@ -19,7 +19,7 @@ To run code on a thread, use the **`.run()`** method:
 ```javascript
 /*
  @param {code} Anonymous function containing the code
- @returns Promise
+ @returns {Promise}
 */
 Thread.worker1.run(<code>)
 ```
