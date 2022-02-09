@@ -1,5 +1,5 @@
 /**
- * Thread.js v0.1 ( https://github.com/MMilan0107/ThreadJS )
+ * Thread.js v0.21 ( https://github.com/MMilan0107/ThreadJS )
  * @author milan107
  * @license https://gnu.org/licenses GPL version 3 or later
  */
@@ -12,13 +12,13 @@
  
      Thread.Allocate = function(x){
  
-         if(typeof x === 'string' && x.toLowerCase() === 'maxcpu') x = navigator.hardwareConcurrency
-         if(typeof x !== 'number' || x <= 0) throw Error('Thread amount must be a positive integer.')
-         if(typeof Thread.worker1 !== 'undefined') throw Error('You can only allocate once.')
+         if((x+'').toLowerCase() === 'maxcpu') x = navigator.hardwareConcurrency
+         if(typeof x !== 'number' || x <= 0) throw Error('Thread amount invalid.')
+         if(typeof Thread.worker1 !== 'undefined') throw Error('You already allocated.')
  
          x |= 0
          var c = 'worker';
-         Thread.return=()=>{};
+         Thread.return=function(){};
  
          for(let i = 1; i < x + 1; i++){
              Thread[c+i] = {
@@ -37,24 +37,27 @@
                             resolve(e.data)
                         }
                         Thread[c+i].__work.onerror = function(e){
-                            console.log(c+i+' failed:')
+                            console.error(c+i+' failed:')
+                            reject('Worker Error')
                         }
                     } )
                 },
-                close: ()=>{
+                close: function(){
                     try{
                         Thread[c+i].__work.terminate()
-                    } catch(error){}
+                    } catch(e){}
 
                     URL.revokeObjectURL(Thread[c+i].__url)
                     delete Thread[c+i]
                 }
              }
          }
-         Thread.Closeall = ()=>{
-            for(let t = 1; t < x + 1; t++){
-                Thread['worker'+t].close()
-            }
+         Thread.Closeall = function(){
+             try{
+                for(let t = 1; t < x + 1; t++){
+                    Thread[c+t].close()
+                }
+             } catch(e){}
         }
      }
 })()
