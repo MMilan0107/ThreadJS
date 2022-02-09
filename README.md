@@ -4,7 +4,7 @@ Very lightweight, a little above a kilobyte minified.
 ## Setup
 From a CDN provider:
 ```html
-<script src="https://cdn.jsdelivr.net/gh/MMilan0107/ThreadJS@main/Thread-min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/MMilan0107/ThreadJS@main/Thread-min.js"></script>
 ```
 # Usage:
 To get started, you have to allocate the amount of threads you want:
