@@ -7,18 +7,18 @@ From a CDN provider:
 <script src="https://cdn.jsdelivr.net/gh/MMilan0107/ThreadJS@main/Thread-min.js"></script>
 ```
 # Usage:
-To get started, you have to allocate the amount of threads you want:
+To get started, you have to open the amount of threads you want:
 ```javascript
 /*
  @param {threads} Number
- Use 'maxcpu' to allocate all physical cores available.
+ Use 'maxcpu' to open the amount of physical cores available.
 */
-Thread.Allocate(<threads>)
+Thread.Open(<threads>)
 ```
-
-You will now see the worker threads in the **`Thread`** object:
-
-![](https://i.imgur.com/tFrBO9n.png)
+All the threads can be accessed trough **`Thread.Worker()`**
+```javascript
+Thread.Worker(2) // Refers to thread 2
+```
 
 To run code on a thread, use the **`.run()`** method:
 ```javascript
@@ -26,21 +26,21 @@ To run code on a thread, use the **`.run()`** method:
  @param {code} Anonymous function containing the code
  @returns {Promise}
 */
-Thread.worker1.run(<code>)
+Thread.Worker(2).run(<code>)
 ```
 To return something to the main thread, use **`Thread.return()`** in the code.
 
 ## Thread closing
 ```javascript
-Thread.worker2.close() // Closes thread 2
-Thread.Closeall() // Closes all threads
+Thread.Close([1, 3, 6]) // Closes thread 1, 3 and 6
+Thread.Close('all') // Closes all threads
 ```
 
 # Full Example
 ```javascript
-Thread.Allocate(1)
+Thread.Open(1)
 
-Thread.worker1.run( ()=>{
+Thread.Worker(1).run( ()=>{
    var x = 1;
    for(let i = 1; i < 100; i++){
       x *= i;
@@ -49,5 +49,5 @@ Thread.worker1.run( ()=>{
 } )
 .then(console.log) // Logs value of x
 
-Thread.Closeall()
+Thread.Close([1])
 ```
