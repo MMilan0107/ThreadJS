@@ -23,7 +23,10 @@
              Thread[c+i] = {
                 run: function(f){
 
-                    if(typeof Thread[c+i].__url !== 'undefined') Thread[c+i].close()
+                    if(typeof Thread[c+i].__url !== 'undefined'){
+                        (window.URL||window.webkitURL).revokeObjectURL(Thread[c+i].__url)
+                        Thread[c+i].__work.terminate()
+                    }
 
                     Thread[c+i].__url = (window.URL||window.webkitURL).createObjectURL(new Blob(['onmessage='+f.toString()+'\nvar Thread={return:(e)=>postMessage(e)};Object.freeze(Thread)'],{type:'text/javascript'}))
                     Thread[c+i].__work = new Worker(Thread[c+i].__url)
