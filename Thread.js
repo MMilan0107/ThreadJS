@@ -1,5 +1,5 @@
 /**
- * Thread.js v0.21 ( https://github.com/MMilan0107/ThreadJS )
+ * Thread.js v0.31 ( https://github.com/MMilan0107/ThreadJS )
  * @author milan107
  * @license https://gnu.org/licenses GPL version 3 or later
  */
@@ -10,24 +10,21 @@
  
      if (typeof Worker === 'undefined') throw Error('Worker is not supported in your browser.')
  
-     Thread.Allocate = function(x){
+     Thread.Open = function(x){
  
          if((x+'').toLowerCase() === 'maxcpu') x = navigator.hardwareConcurrency
          if(typeof x !== 'number' || x <= 0) throw Error('Thread amount invalid.')
-         if(typeof Thread.worker1 !== 'undefined') throw Error('You already allocated.')
  
          x |= 0
-         var c = 'worker';
+         var c = '__worker';
          Thread.return=function(){};
  
          for(let i = 1; i < x + 1; i++){
              Thread[c+i] = {
                 run: function(f){
 
-                    if(typeof Thread[c+i].__url !== 'undefined'){
-                        URL.revokeObjectURL(Thread[c+i].__url)
-                        Thread[c+i].__work.terminate()
-                    }
+                    if(typeof Thread[c+i].__url !== 'undefined') Thread[c+i].close()
+
                     Thread[c+i].__url = (window.URL||window.webkitURL).createObjectURL(new Blob(['onmessage='+f.toString()+'\nvar Thread={return:(e)=>postMessage(e)};Object.freeze(Thread)'],{type:'text/javascript'}))
                     Thread[c+i].__work = new Worker(Thread[c+i].__url)
                     Thread[c+i].__work.postMessage(0)
@@ -37,8 +34,7 @@
                             resolve(e.data)
                         }
                         Thread[c+i].__work.onerror = function(e){
-                            console.error(c+i+' failed:')
-                            reject('Worker Error')
+                            reject('Worker('+i+')'+' Error')
                         }
                     } )
                 },
@@ -47,17 +43,31 @@
                         Thread[c+i].__work.terminate()
                     } catch(e){}
 
-                    URL.revokeObjectURL(Thread[c+i].__url)
+                    (window.URL||window.webkitURL).revokeObjectURL(Thread[c+i].__url)
                     delete Thread[c+i]
                 }
              }
          }
-         Thread.Closeall = function(){
-             try{
+         Thread.Worker = function(e){
+             return Thread[c+e]
+         }
+         Thread.Close = function(e){
+
+            if(typeof e !== 'string' && typeof e !== 'object') throw Error('Invalid prarmeter.')
+
+            if((e+'').toLowerCase() === 'all'){
+
                 for(let t = 1; t < x + 1; t++){
-                    Thread[c+t].close()
+                    try{
+                        Thread[c+t].close()
+                    } catch (e){}
                 }
-             } catch(e){}
+
+            } else{
+                e.forEach(el =>{
+                    Thread[c+Number(el)].close()
+                })
+            }
         }
      }
 })()
