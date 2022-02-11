@@ -6,6 +6,7 @@ From a CDN provider:
 ```html
 <script src="https://cdn.jsdelivr.net/gh/MMilan0107/ThreadJS@main/Thread-min.js"></script>
 ```
+or [download](https://raw.githubusercontent.com/MMilan0107/ThreadJS/main/Thread-min.js) from here.
 # Usage:
 To get started, you have to open the amount of threads you want:
 ```javascript
