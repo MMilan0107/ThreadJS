@@ -23,7 +23,7 @@
              Thread[c+i] = {
                 run: function(f){
 
-                    if(typeof this.__url !== 'undefined'){
+                    if(this.hasOwnProperty('__work')){
                         (window.URL||window.webkitURL).revokeObjectURL(this.__url)
                         this.__work.terminate()
                     }
