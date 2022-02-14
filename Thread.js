@@ -56,7 +56,7 @@
          }
          Thread.Close = function(e){
 
-            if(typeof e !== 'string' && typeof e !== 'object') throw 'Invalid prarmeter.'
+            if(typeof e !== 'string' && typeof e !== 'object') throw 'Invalid parameter.'
 
             if((e+'').toLowerCase() === 'all'){
 
