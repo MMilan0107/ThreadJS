@@ -1,5 +1,5 @@
 /**
- * Thread.js v0.31 ( https://github.com/MMilan0107/ThreadJS )
+ * Thread.js v0.32 ( https://github.com/MMilan0107/ThreadJS )
  * @author milan107
  * @license https://gnu.org/licenses GPL version 3 or later
  */
@@ -8,12 +8,12 @@
 (function(){
      'use strict';
  
-     if (typeof Worker === 'undefined') throw Error('Worker is not supported in your browser.')
+     if (typeof Worker === 'undefined') throw 'Worker is not supported in your browser.'
  
      Thread.Open = function(x){
  
          if((x+'').toLowerCase() === 'maxcpu') x = navigator.hardwareConcurrency
-         if(typeof x !== 'number' || x <= 0) throw Error('Thread amount invalid.')
+         if(typeof x !== 'number' || x <= 0) throw 'Thread amount invalid.'
  
          x |= 0
          var c = '__worker';
@@ -23,20 +23,20 @@
              Thread[c+i] = {
                 run: function(f){
 
-                    if(typeof Thread[c+i].__url !== 'undefined'){
-                        (window.URL||window.webkitURL).revokeObjectURL(Thread[c+i].__url)
-                        Thread[c+i].__work.terminate()
+                    if(typeof this.__url !== 'undefined'){
+                        (window.URL||window.webkitURL).revokeObjectURL(this.__url)
+                        this.__work.terminate()
                     }
 
-                    Thread[c+i].__url = (window.URL||window.webkitURL).createObjectURL(new Blob(['onmessage='+f.toString()+'\nvar Thread={return:(e)=>postMessage(e)};Object.freeze(Thread)'],{type:'text/javascript'}))
-                    Thread[c+i].__work = new Worker(Thread[c+i].__url)
-                    Thread[c+i].__work.postMessage(0)
+                    this.__url = (window.URL||window.webkitURL).createObjectURL(new Blob(['onmessage='+f.toString()+'\nvar Thread={return:(e)=>postMessage(e)};Object.freeze(Thread)'],{type:'text/javascript'}))
+                    this.__work = new Worker(this.__url)
+                    this.__work.postMessage(0)
 
                     return new Promise( (resolve,reject)=>{
-                        Thread[c+i].__work.onmessage = function(e){
+                        this.__work.onmessage = function(e){
                             resolve(e.data)
                         }
-                        Thread[c+i].__work.onerror = function(e){
+                        this.__work.onerror = function(e){
                             reject('Worker('+i+')'+' Error')
                         }
                     } )
@@ -56,7 +56,7 @@
          }
          Thread.Close = function(e){
 
-            if(typeof e !== 'string' && typeof e !== 'object') throw Error('Invalid prarmeter.')
+            if(typeof e !== 'string' && typeof e !== 'object') throw 'Invalid prarmeter.'
 
             if((e+'').toLowerCase() === 'all'){
 
